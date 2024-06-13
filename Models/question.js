@@ -1,22 +1,19 @@
-// models/Question.js
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const QuestionSchema = new Schema({
-    survey: {
-        type: Schema.Types.ObjectId,
-        ref: 'Survey',
-        required: true
-    },
-    questionType: {
-        type: Schema.Types.ObjectId,
-        ref: 'QuestionType',
-        required: true
-    },
-    text: {
-        type: String,
-        required: true
-    }
-}, { timestamps: true });
+const questionSchema = new mongoose.Schema({
+  surveyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Survey',
+    required: true
+  },
+  questionTypeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'QuestionType',
+    required: true
+  }
+  // Add other fields for your questions here
+});
 
-module.exports = mongoose.model('Question', QuestionSchema);
+const Question = mongoose.model('Question', questionSchema);
+
+module.exports = Question;
