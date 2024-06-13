@@ -17,11 +17,15 @@ app.use('/surveyRouter', surveyRoutes);
 const questionTypeRouter = require("./Routes/questionTypeRouter");
 app.use('/questionTypesRouter', questionTypeRouter);
 
+const businessRouter = require("./Routes/Business");
+app.use('/businesses', businessRouter);
+
 
 
 
 // const questionRoutes = require('./routes/questionRoutes');
 // app.use('/api/question', questionRoutes);
+
 
 
 
