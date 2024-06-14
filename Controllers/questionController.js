@@ -1,6 +1,4 @@
-// controllers/questionController.js
-
-const Question = require("../models/question");
+const Question = require("../models/Question");
 
 // Get all questions
 const getAllQuestions = async (req, res) => {
@@ -11,12 +9,15 @@ const getAllQuestions = async (req, res) => {
         res.status(404).json({ message: error.message });
     }
 }
- 
+
 // Get a single question by ID
 const getSingleQuestion = async (req, res) => {
     const id = req.params.id;
     try {
-        const question = await Question.findOne({ _id: id });
+        const question = await Question.findById(id);
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
         res.status(200).json(question);
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -25,14 +26,19 @@ const getSingleQuestion = async (req, res) => {
 
 // Create a question
 const createQuestion = async (req, res) => {
-    const { surveyId, questionTypeId } = req.body;
+    const { Question_Id, Text, Options, Question_Type_Id, Required, Survey_Id } = req.body;
 
     try {
-        const question = await Question.create({
-            surveyId,
-            questionTypeId
-            // Add other fields as needed
+        const question = new Question({
+            Question_Id,
+            Text,
+            Options,
+            Question_Type_Id,
+            Required,
+            Survey_Id
         });
+
+        await question.save();
         res.status(201).json(question);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -42,8 +48,19 @@ const createQuestion = async (req, res) => {
 // Update a question
 const updateQuestion = async (req, res) => {
     const id = req.params.id;
+    const { Text, Options, Question_Type_Id, Required } = req.body;
+
     try {
-        const updatedQuestion = await Question.findOneAndUpdate({ _id: id }, req.body, { new: true });
+        const updatedQuestion = await Question.findByIdAndUpdate(
+            id,
+            { Text, Options, Question_Type_Id, Required },
+            { new: true }
+        );
+
+        if (!updatedQuestion) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+
         res.status(200).json(updatedQuestion);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -54,7 +71,12 @@ const updateQuestion = async (req, res) => {
 const deleteQuestion = async (req, res) => {
     const id = req.params.id;
     try {
-        await Question.findOneAndDelete({ _id: id });
+        const question = await Question.findByIdAndDelete(id);
+
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+
         res.status(204).json({ message: "Question deleted successfully" });
     } catch (error) {
         res.status(400).json({ message: error.message });
