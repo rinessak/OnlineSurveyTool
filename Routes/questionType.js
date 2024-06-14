@@ -5,8 +5,7 @@ const router = express.Router();
 // Route to get all question types
 router.get('/', questionTypeController.getAllQuestionTypes);
 
-// Route to get a single question type by ID
-router.get('/:id', questionTypeController.getQuestionTypeById);
+router.get('/:id', questionTypeController.getSingleQuestionType);
 
 // Route to create a new question type
 router.post('/', questionTypeController.createQuestionType);
