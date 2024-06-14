@@ -1,12 +1,29 @@
 const express = require('express');
 const router = express.Router();
-const questionController = require('../controllers/questionController');
+const Question = require('../models/Question');
 
-// Create a question
-router.post('/', questionController.createQuestion);
+// @route    POST api/questions
+// @desc     Create a question
+// @access   Public
+router.post('/', async (req, res) => {
+  const { Question_Id, Text, Options, Question_Type_Id, Required, Survey_Id } = req.body;
 
-// Get all questions
-router.get('/', questionController.getAllQuestions);
+  try {
+    let question = new Question({
+      Question_Id,
+      Text,
+      Options,
+      Question_Type_Id,
+      Required,
+      Survey_Id
+    });
 
-// Export the router
+    await question.save();
+    res.json(question);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 module.exports = router;
