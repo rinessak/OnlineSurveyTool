@@ -1,5 +1,5 @@
 const express = require('express');
-const questionTypeController = require('../Controllers/questionType'); // Import the entire controller object
+const questionTypeController = require('../Controllers/questionTypeController'); // Import the entire controller object
 const router = express.Router();
 
 // Route to get all question types
