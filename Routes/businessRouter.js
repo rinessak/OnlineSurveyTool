@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const businessController = require('../Controllers/Business');
+const businessController = require('../Controllers/businessController');
 
 // GET all businesses
 router.get('/', businessController.getAllBusinesses);
