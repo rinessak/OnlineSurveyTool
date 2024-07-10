@@ -1,76 +1,72 @@
-const Business = require('../Models/Business');
+
+const Business = require('../Models/business');
 
 // Get all businesses
-const getAllBusinesses = async (req, res) => {
+exports.getAllBusinesses = async (req, res) => {
     try {
         const businesses = await Business.find();
-        res.json(businesses);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(200).json(businesses);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };
 
-// Get single business by ID
-const getSingleBusiness = async (req, res) => {
+// Get a single business by ID
+exports.getBusinessById = async (req, res) => {
+    const id = req.params.id;
     try {
-        const business = await Business.findById(req.params.id);
-        if (business) {
-            res.json(business);
-        } else {
-            res.status(404).json({ message: 'Business not found' });
+        const business = await Business.findById(id);
+        if (!business) {
+            return res.status(404).json({ message: 'Business not found' });
         }
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(200).json(business);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };
 
 // Create a new business
-const createBusiness = async (req, res) => {
-    const business = new Business({
-        name: req.body.name,
-        description: req.body.description
-    });
-
+exports.createBusiness = async (req, res) => {
+    const { name, description, fiscalNumber, address } = req.body;
     try {
-        const newBusiness = await business.save();
+        const newBusiness = await Business.create({
+            name,
+            description,
+            fiscalNumber,
+            address
+        });
         res.status(201).json(newBusiness);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };
 
-// Delete a business
-const deleteBusiness = async (req, res) => {
+// Update an existing business
+exports.updateBusiness = async (req, res) => {
+    const id = req.params.id;
     try {
-        const business = await Business.findById(req.params.id);
-        if (business) {
-            await business.remove();
-            res.json({ message: 'Business deleted' });
-        } else {
-            res.status(404).json({ message: 'Business not found' });
-        }
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        const updatedBusiness = await Business.findByIdAndUpdate(id, req.body, { new: true });
+        res.status(200).json(updatedBusiness);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };
 
-// Update a business
-const updateBusiness = async (req, res) => {
+// Delete a business by ID
+exports.deleteBusiness = async (req, res) => {
+    const id = req.params.id;
     try {
-        const business = await Business.findById(req.params.id);
-        if (business) {
-            business.name = req.body.name || business.name;
-            business.description = req.body.description || business.description;
-            business.updated_at = Date.now();
-
-            const updatedBusiness = await business.save();
-            res.json(updatedBusiness);
-        } else {
-            res.status(404).json({ message: 'Business not found' });
-        }
-    } catch (err) {
-        res.status(400).json({ message: err.message });
+        await Business.findByIdAndDelete(id);
+        res.status(204).json({ message: 'Business deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };
 
-module.exports = { getAllBusinesses, getSingleBusiness, createBusiness, deleteBusiness, updateBusiness };
+module.exports = {
+    getAllBusinesses,
+    getBusinessById,
+    createBusiness,
+    deleteBusiness,
+    updateBusiness
+};
