@@ -1,8 +1,7 @@
-
 const Business = require('../Models/business');
 
 // Get all businesses
-exports.getAllBusinesses = async (req, res) => {
+const getAllBusinesses = async (req, res) => {
     try {
         const businesses = await Business.find();
         res.status(200).json(businesses);
@@ -12,7 +11,7 @@ exports.getAllBusinesses = async (req, res) => {
 };
 
 // Get a single business by ID
-exports.getBusinessById = async (req, res) => {
+const getBusinessById = async (req, res) => {
     const id = req.params.id;
     try {
         const business = await Business.findById(id);
@@ -26,7 +25,7 @@ exports.getBusinessById = async (req, res) => {
 };
 
 // Create a new business
-exports.createBusiness = async (req, res) => {
+const createBusiness = async (req, res) => {
     const { name, description, fiscalNumber, address } = req.body;
     try {
         const newBusiness = await Business.create({
@@ -42,10 +41,13 @@ exports.createBusiness = async (req, res) => {
 };
 
 // Update an existing business
-exports.updateBusiness = async (req, res) => {
+const updateBusiness = async (req, res) => {
     const id = req.params.id;
     try {
         const updatedBusiness = await Business.findByIdAndUpdate(id, req.body, { new: true });
+        if (!updatedBusiness) {
+            return res.status(404).json({ message: 'Business not found' });
+        }
         res.status(200).json(updatedBusiness);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -53,7 +55,7 @@ exports.updateBusiness = async (req, res) => {
 };
 
 // Delete a business by ID
-exports.deleteBusiness = async (req, res) => {
+const deleteBusiness = async (req, res) => {
     const id = req.params.id;
     try {
         await Business.findByIdAndDelete(id);
@@ -67,6 +69,6 @@ module.exports = {
     getAllBusinesses,
     getBusinessById,
     createBusiness,
-    deleteBusiness,
-    updateBusiness
+    updateBusiness,
+    deleteBusiness
 };
