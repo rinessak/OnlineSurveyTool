@@ -4,22 +4,22 @@ const QuestionType = require('../Models/questionType');
 const getAllQuestionTypes = async (req, res) => {
     try {
         const questionTypes = await QuestionType.find();
-        res.json(questionTypes);
+        res.status(200).json(questionTypes);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ message: 'Failed to retrieve question types', error: err.message });
     }
 };
 
 // Controller to get a single question type by ID
-const getSingleQuestionType = async (req, res) => {
+const getQuestionTypeById = async (req, res) => {
     try {
         const questionType = await QuestionType.findById(req.params.id);
         if (!questionType) {
             return res.status(404).json({ message: 'Question type not found' });
         }
-        res.json(questionType);
+        res.status(200).json(questionType);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ message: 'Failed to retrieve question type', error: err.message });
     }
 };
 
@@ -27,11 +27,14 @@ const getSingleQuestionType = async (req, res) => {
 const createQuestionType = async (req, res) => {
     try {
         const { name, description } = req.body;
+        if (!name || !description) {
+            return res.status(400).json({ message: 'Name and description are required' });
+        }
         const newQuestionType = new QuestionType({ name, description });
         await newQuestionType.save();
         res.status(201).json(newQuestionType);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        res.status(500).json({ message: 'Failed to create question type', error: err.message });
     }
 };
 
@@ -39,17 +42,20 @@ const createQuestionType = async (req, res) => {
 const updateQuestionType = async (req, res) => {
     try {
         const { name, description } = req.body;
+        if (!name || !description) {
+            return res.status(400).json({ message: 'Name and description are required' });
+        }
         const updatedQuestionType = await QuestionType.findByIdAndUpdate(
             req.params.id,
-            { name, description, updated_at: Date.now() },
-            { new: true }
+            { name, description },
+            { new: true, runValidators: true }
         );
         if (!updatedQuestionType) {
             return res.status(404).json({ message: 'Question type not found' });
         }
-        res.json(updatedQuestionType);
+        res.status(200).json(updatedQuestionType);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        res.status(500).json({ message: 'Failed to update question type', error: err.message });
     }
 };
 
@@ -60,15 +66,15 @@ const deleteQuestionType = async (req, res) => {
         if (!deletedQuestionType) {
             return res.status(404).json({ message: 'Question type not found' });
         }
-        res.json({ message: 'Question type deleted' });
+        res.status(200).json({ message: 'Question type deleted' });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ message: 'Failed to delete question type', error: err.message });
     }
 };
 
 module.exports = {
     getAllQuestionTypes,
-    getSingleQuestionType,
+    getQuestionTypeById,
     createQuestionType,
     updateQuestionType,
     deleteQuestionType
