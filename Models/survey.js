@@ -5,14 +5,14 @@ const SurveySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: function () {
-            return !this.companyId; // User ID is required if company ID is not provided
+            return !this.companyId; 
         }
     },
     companyId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company',
         required: function () {
-            return !this.userId; // Company ID is required if user ID is not provided
+            return !this.userId; 
         }
     },
     name: {
