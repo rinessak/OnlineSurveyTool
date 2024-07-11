@@ -27,13 +27,25 @@ const getBusinessById = async (req, res) => {
 // Create a new business
 const createBusiness = async (req, res) => {
     const { name, description, fiscalNumber, address } = req.body;
+
+    if (!name || !description || !fiscalNumber || !address) {
+        return res.status(400).json({ message: 'Required fields are missing' });
+    }
+
     try {
-        const newBusiness = await Business.create({
+        const existingBusiness = await Business.findOne({ fiscalNumber });
+        if (existingBusiness) {
+            return res.status(409).json({ message: 'Business with this fiscal number already exists' });
+        }
+
+        const newBusiness = new Business({
             name,
             description,
             fiscalNumber,
             address
         });
+
+        await newBusiness.save();
         res.status(201).json(newBusiness);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -50,25 +62,20 @@ const updateBusiness = async (req, res) => {
         }
         res.status(200).json(updatedBusiness);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
-};
+}
 
 // Delete a business by ID
 const deleteBusiness = async (req, res) => {
     const id = req.params.id;
     try {
-        await Business.findByIdAndDelete(id);
+        const business = await Business.findByIdAndDelete(id);
+        if (!business) return res.status(404).json({ message: 'Business not found' });
         res.status(204).json({ message: 'Business deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
-};
+}
 
-module.exports = {
-    getAllBusinesses,
-    getBusinessById,
-    createBusiness,
-    updateBusiness,
-    deleteBusiness
-};
+module.exports = { getAllBusinesses, getBusinessById, createBusiness, updateBusiness, deleteBusiness };
