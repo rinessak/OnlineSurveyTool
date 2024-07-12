@@ -1,24 +1,28 @@
 const mongoose = require('mongoose');
 
-const AnswersSchema = new mongoose.Schema({
-    question: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Question',
-        required: true
-    },
-    survey: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Survey',
-        required: true
-    },
-    responder: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    },
-    answer: {
-        type: String,
-        required: true
-    }
+const AnswerSchema = new mongoose.Schema({
+  questionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Question',
+      required: true
+  },
+  surveyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Survey',
+      required: true
+  },
+  responderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false
+  },
+  answer: {
+      type: String,
+      required: true
+  },
+  otherAnswer: {
+      type: String
+  }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Answers', AnswersSchema);
+module.exports = mongoose.model('Answers', AnswerSchema);
