@@ -1,4 +1,4 @@
-const Question = require("../models/Question");
+const Question = require("../Models/question");
 
 // Get all questions
 const getAllQuestions = async (req, res) => {
@@ -8,7 +8,7 @@ const getAllQuestions = async (req, res) => {
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
-}
+};
 
 // Get a single question by ID
 const getSingleQuestion = async (req, res) => {
@@ -22,20 +22,20 @@ const getSingleQuestion = async (req, res) => {
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
-}
+};
 
 // Create a question
 const createQuestion = async (req, res) => {
-    const { Question_Id, Text, Options, Question_Type_Id, Required, Survey_Id } = req.body;
+    const { Text, Options, Question_Type_Id, Required, Survey_Id, Allow_Other } = req.body;
 
     try {
         const question = new Question({
-            Question_Id,
             Text,
             Options,
             Question_Type_Id,
             Required,
-            Survey_Id
+            Survey_Id,
+            Allow_Other
         });
 
         await question.save();
@@ -48,12 +48,12 @@ const createQuestion = async (req, res) => {
 // Update a question
 const updateQuestion = async (req, res) => {
     const id = req.params.id;
-    const { Text, Options, Question_Type_Id, Required } = req.body;
+    const { Text, Options, Question_Type_Id, Required, Allow_Other } = req.body;
 
     try {
         const updatedQuestion = await Question.findByIdAndUpdate(
             id,
-            { Text, Options, Question_Type_Id, Required },
+            { Text, Options, Question_Type_Id, Required, Allow_Other },
             { new: true }
         );
 
@@ -65,7 +65,7 @@ const updateQuestion = async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
-}
+};
 
 // Delete a question
 const deleteQuestion = async (req, res) => {
@@ -81,6 +81,6 @@ const deleteQuestion = async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
-}
+};
 
 module.exports = { getAllQuestions, getSingleQuestion, createQuestion, updateQuestion, deleteQuestion };
