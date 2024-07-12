@@ -2,22 +2,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const questionSchema = new Schema({
-  Question_Id: {
-    type: String,
-    required: true,
-    unique: true
-  },
   Text: {
     type: String,
     required: true
   },
-  Options: {
-    type: [String], // Array of strings
-    required: false
-  },
   Question_Type_Id: {
     type: String,
     required: true
+  },
+  Options: {
+    type: [String],
+    required: false
   },
   Required: {
     type: Boolean,
@@ -27,7 +22,12 @@ const questionSchema = new Schema({
   Survey_Id: {
     type: String,
     required: true
+  },
+  Allow_Other: {
+    type: Boolean,
+    default: true
   }
 });
 
-module.exports = mongoose.model('Question', questionSchema);
+module.exports = mongoose.model('Question', questionSchema); // Removed the space before 'question'
+
