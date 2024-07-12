@@ -7,5 +7,6 @@ router.get('/:id', answerController.getSingleAnswer);
 router.post('/', answerController.createAnswer);
 router.patch('/:id', answerController.updateAnswer);
 router.delete('/:id', answerController.deleteAnswer);
+router.post('/submit-answer', answerController.submitAnswer);  
 
 module.exports = router;
